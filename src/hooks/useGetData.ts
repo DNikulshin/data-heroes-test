@@ -27,7 +27,6 @@ export default function useGetData() {
   };
   return {
     getData,
-    getEpisode,
-    // getFilterData,
+    getEpisode
   };
 }
