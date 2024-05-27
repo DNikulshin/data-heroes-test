@@ -1,10 +1,18 @@
 import axios from "axios";
-import { IData } from "./types";
+import { IData } from "../types";
+
+interface getDataProps {
+  page?: number;
+  params: {
+    name?: string;
+    status?: string;
+  };
+}
 
 export default function useGetData() {
-  const getData = async (page: number) => {
+  const getData = async ({ page = 1, params }: getDataProps) => {
     const { data } = await axios<IData>(
-      `https://rickandmortyapi.com/api/character?page=${page}`,
+      `https://rickandmortyapi.com/api/character?page=${page}&name=${params.name}&status=${params.status}`,
     );
 
     return {
@@ -13,16 +21,16 @@ export default function useGetData() {
     };
   };
 
-  const getFilterData = async ({ name = "", status = "" }) => {
-    const { data } = await axios<IData>(
-      `https://rickandmortyapi.com/api/character/?name=${name}&status=${status}`,
-    );
+  // const getFilterData = async ({ name = "", status = "" }) => {
+  //   const { data } = await axios<IData>(
+  //     `https://rickandmortyapi.com/api/character/?name=${name}&status=${status}`,
+  //   );
 
-    return {
-      info: data?.info,
-      results: data?.results,
-    };
-  };
+  //   return {
+  //     info: data?.info,
+  //     results: data?.results,
+  //   };
+  // };
 
   const getEpisode = async (url: string) => {
     const { data } = await axios(url);
@@ -31,6 +39,6 @@ export default function useGetData() {
   return {
     getData,
     getEpisode,
-    getFilterData,
+    // getFilterData,
   };
 }

@@ -13,7 +13,8 @@
       </select>
       <input
         v-model="inputValue" 
-        type="text" 
+        @keydown.enter="setFilter"
+        type="search" 
         placeholder="Enter name..." 
         />
       <button 
@@ -47,11 +48,11 @@
       </div>
       <div class="color-gray location">
         Last known location:
-        <p class="color-white">{{ item.location.name }}</p>
+        <p class="color-white">{{ item?.location?.name }}</p>
       </div>
       <div class="color-gray">
         First seen in:
-      <Episode :url="item.episode[0]"/>
+      <Episode :url="item.episode![0]"/>
       </div>
     </div>
     </div>
@@ -73,15 +74,16 @@
 </template>
 
 <script setup lang="ts">
-  import axios from "axios"
+  // @ts-ignore
   import Paginate from "vuejs-paginate-next"
-  import { onMounted, ref, computed} from 'vue'
+  import {IData, Result, Info} from './types'
+  import { onMounted, ref} from 'vue'
   import  useGetData  from './hooks/useGetData' 
   import Episode from './components/Episode.vue'
  
-  const items = ref<IData>([])
-  const itemsInfo = ref<IData>({})
-  const {getData , getEpisode, getFilterData} = useGetData()
+  const items = ref<Result[]>([])
+  const itemsInfo = ref<Info>({pages: 1})
+  const {getData} = useGetData()
   const page = ref(1)
   const selectedValue = ref('')
   const inputValue = ref('')
@@ -93,25 +95,38 @@
   ])
  
   onMounted( async () => {
-  const {info, results}: IData = await getData()
+  const {info, results}: IData = await getData(
+    { 
+      params: {name: '', status: ''}
+    }
+  )
   items.value = results
   itemsInfo.value = info
   })
 
   const setPaginate = async(page: number) => {
-     const {results}: IData = await getData(page)
+     const {results}: IData = await getData(
+       {
+         page,
+        params: 
+        {
+          name: inputValue.value , 
+         status: selectedValue.value}}
+     )
      items.value = results
   }
 
   const setFilter = async () => {
-     const {results}: IData = await getFilterData(
+     const {info, results}: IData = await getData(
        {
-         name: inputValue.value , 
-        status: selectedValue.value
+         params: {
+           name: inputValue.value, 
+           status: selectedValue.value
+         }
        }
      )
     items.value = results
-    console.log(items.value)
+    itemsInfo.value = info
   }
 
 </script>
