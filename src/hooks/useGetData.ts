@@ -21,17 +21,6 @@ export default function useGetData() {
     };
   };
 
-  // const getFilterData = async ({ name = "", status = "" }) => {
-  //   const { data } = await axios<IData>(
-  //     `https://rickandmortyapi.com/api/character/?name=${name}&status=${status}`,
-  //   );
-
-  //   return {
-  //     info: data?.info,
-  //     results: data?.results,
-  //   };
-  // };
-
   const getEpisode = async (url: string) => {
     const { data } = await axios(url);
     return data?.name;
