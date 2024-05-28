@@ -38,10 +38,8 @@
     <div class="info">
       <div class="item-name"><h2>{{ item.name }}</h2>
               <span class="status">
-         <span  :class="{
-            alive: item.status === 'Alive', 
-            'dead': item.status === 'Dead'
-          }">
+         <span :class="`${item.status}`"
+           >
           </span>
             {{ item.status }}-{{item.name}}
               </span>
@@ -74,7 +72,6 @@
 </template>
 
 <script setup lang="ts">
-  // @ts-ignore
   import Paginate from "vuejs-paginate-next"
   import {IData, Result, Info} from './types'
   import { onMounted, ref} from 'vue'
@@ -102,6 +99,8 @@
   )
   items.value = results
   itemsInfo.value = info
+
+    console.log(items.value)
   })
 
   const setPaginate = async(page: number) => {
@@ -173,7 +172,8 @@
     background: rgb(60, 62, 68);
     border-radius: 0.5rem;
     margin: 0.75rem;
-    box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, 
+      rgba(0, 0, 0, 0.06) 0px 2px 4px -1px;
   }
 
   .item-name:first-child {
@@ -217,17 +217,22 @@
     height: 0.5rem;
     width: 0.5rem;
     margin-right: 0.375rem;
-    background: rgb(158, 158, 158);
+    /* background: rgb(158, 158, 158); */
     border-radius: 50%;
     font-size: 16px;
     font-weight: 500;
   }
-  .alive {
+  
+  .Alive {
     background: rgb(0, 255, 0)!important;
   }
 
-  .dead {
+  .Dead {
       background: rgb(214, 61, 46)!important;
+  }
+  
+  .unknown {
+     background: rgb(158, 158, 158)!important;
   }
   
   .color-gray {
@@ -248,10 +253,12 @@
     margin-bottom: 1rem;
     cursor: pointer;
   }
+  
   .filter {
     display: flex;
     gap: .5rem;
   }
+  
   .filter select, .filter button {
     padding: 0.5rem;
     border-radius: 0.5rem;
@@ -259,10 +266,13 @@
     background: rgb(60, 62, 68);
     color: white;
   }
+  
    .filter select > option {
      padding: .5rem;
    }
+  
   .filter select:invalid { 
     color: white!important;
   }
+  
 </style>
